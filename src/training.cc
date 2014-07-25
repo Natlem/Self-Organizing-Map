@@ -12,7 +12,21 @@ void training(unsigned int wWidth, unsigned wHeight, cv::Mat3b& image) {
     }
 
     std::mt19937 mt_rand(std::time(0));
-    auto rand_col = std::bind(std::uniform_int_distribution<double>(0,image.cols - 1), mt_rand);
+    auto rand_col = std::bind(std::uniform_int_distribution<int>(0,image.cols - 1), mt_rand);
 
+    auto rand_rows = std::bind(std::uniform_int_distribution<int>(0,image.rows - 1), mt_rand);
+
+    cv::Vec3b aPixel = image.at<cv::Vec3b>(rand_col(), rand_rows());
+   
+    double minDistance = std::numeric_limits<double>::max();
+    Node bmu = Node();
+
+    for (auto& v : network)
+      for (auto& n : v) {
+            if (minDistance < n.Distance(aPixel)) {
+                bmu = n;
+            }
+      }
+    
 }
 

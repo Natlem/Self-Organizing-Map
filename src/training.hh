@@ -2,5 +2,9 @@
 # define TRAINING_HH
 
 #include "Node.hh"
+#include <algorithm>
+#include <limits>
+
+
 
 #endif 

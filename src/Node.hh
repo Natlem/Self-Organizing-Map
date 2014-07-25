@@ -13,6 +13,7 @@
 class Node {
     public:
         Node(int eLeft, int eRight, int eTop, int eBottom);
+        Node();
         double Distance(cv::Vec3b aPixel);
     private:
         double weight[3]; //Weights for B/G/R 0 < w < 1
