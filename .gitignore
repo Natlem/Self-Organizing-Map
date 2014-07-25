@@ -1,0 +1,16 @@
+*#*
+*.swp
+*~
+
+*.o
+
+a.out
+PrPa_Projet
+generator
+
+CMakeCache.txt
+CMakeFiles/
+Makefile
+*.cmake
+
+*.png
