@@ -1,0 +1,28 @@
+#ifndef NODE_HH
+# define NODE_HH
+
+#include <chrono>
+#include <iostream>
+#include <functional>
+#include <random>
+#include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
+class Node {
+    public:
+        Node(int eLeft, int eRight, int eTop, int eBottom);
+        Distance(cv::Vec3b aPixel);
+    private:
+        double weight[3]; //Weights for R/G/B 0 < w < 1
+        double n_X; // coordinate X in the Network/Lattice
+        double n_Y; // coordinate Y in the Network/Lattice
+
+        // Edge of Node
+        int eLeft;
+        int eRight;
+        int eTop;
+        int eBottom;
+};
+
+#endif 
