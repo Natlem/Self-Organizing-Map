@@ -47,15 +47,25 @@ find_package( OpenCV REQUIRED )
    V_SOURCE
    ../src/*.[ch][ch]
  )
+ file(
+   GLOB_RECURSE
+   V_GENERATE
+   ../example/*.[ch][ch]
+ )
 
  #Add Files
  add_executable(
    PrPa_Projet
    ${V_SOURCE}
  )
+ add_executable(
+   generator
+   ${V_SOURCE}
+ )
 
 #Link target
 target_link_libraries( PrPa_Projet ${OpenCV_LIBS} )
+target_link_libraries( generator ${OpenCV_LIBS} )
 
 #Custom Cmd Clean
 ADD_CUSTOM_TARGET (distclean @echo cleaning for source distribution)
