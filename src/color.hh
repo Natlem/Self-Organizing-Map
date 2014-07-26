@@ -6,6 +6,6 @@
 # include <opencv2/highgui/highgui.hpp>
 # include <opencv2/core/core.hpp>
 
-std::vector<cv::Vec3b> detecColors(cv::Mat img);
+std::vector<cv::Vec3b> detecColors(cv::Mat3b& img);
 
 #endif // !COLOR_HH_

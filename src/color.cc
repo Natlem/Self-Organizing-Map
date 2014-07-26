@@ -1,6 +1,6 @@
 #include "color.hh"
 
-std::vector<cv::Vec3b> detecColors(cv::Mat img)
+std::vector<cv::Vec3b> detecColors(cv::Mat3b& img)
 {
   std::vector<cv::Vec3b> colors;
 

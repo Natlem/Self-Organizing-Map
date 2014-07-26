@@ -4,7 +4,7 @@
 #include "color.hh"
 
 std::mt19937::result_type seed  = std::time(0);
-std::function<double()> double_rand = std::bind(std::uniform_real_distribution<double>(0,1), std::mt19937(seed));
+std::function<int()> double_rand = std::bind(std::uniform_int_distribution<int>(0,100), std::mt19937(seed));
 
 std::function<int()> rand_col;
 
@@ -48,12 +48,6 @@ int main(int argc, char* argv[])
 
             res.at<cv::Vec3b>(tmpdst.first, tmpdst.second) = tmp;
         }
-    /*int i = 0;
-    for (auto& v : nN.network_)
-        for (auto& c : v)
-            if(c.isOccupied)
-                ++i;*/
-    //std::cout << "occuped"  << i << std::endl;
     cv::namedWindow("Display Windows", cv::WINDOW_AUTOSIZE);
     cv::imshow("Display Windows",res);
     cv::waitKey(0);
