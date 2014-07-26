@@ -15,7 +15,25 @@ Training::Training(unsigned int wWidth, unsigned wHeight, cv::Mat3b& image, unsi
     this->iterationCount_ = 0;
 }
 
-void Training::findBMU(cv::Vec3b& aPixel)
+void Training::train() {
+    
+    double neighborRadius = 0;
+    findBMU(getAPixel());
+    neighborRadius = this->radius_ * std::exp((double)-this->iterationCount_ / this->timeCst_);
+    ++this->iterationCount_;
+}
+
+cv::Vec3b Training::getAPixel() {
+
+    std::mt19937 mt_rand(std::time(0));
+    auto rand_col = std::bind(std::uniform_int_distribution<int>(0,this->image_.cols - 1), mt_rand);
+     
+    auto rand_rows = std::bind(std::uniform_int_distribution<int>(0,this->image_.rows - 1), mt_rand);
+    
+    return this->image_.at<cv::Vec3b>(rand_col(), rand_rows());
+}
+
+void Training::findBMU(cv::Vec3b aPixel)
 {
     std::mt19937 mt_rand(std::time(0));
  
@@ -32,18 +50,3 @@ void Training::findBMU(cv::Vec3b& aPixel)
       }
 }
 
-void Training::train() {
-    
-    double neighborRadius = 0;
-
-    std::mt19937 mt_rand(std::time(0));
-    auto rand_col = std::bind(std::uniform_int_distribution<int>(0,this->image_.cols - 1), mt_rand);
-     
-    auto rand_rows = std::bind(std::uniform_int_distribution<int>(0,this->image_.rows - 1), mt_rand);
-    
-    cv::Vec3b aPixel = this->image_.at<cv::Vec3b>(rand_col(), rand_rows());
-    findBMU(aPixel);
-    neighborRadius = this->radius_ * std::exp((double)-this->iterationCount_ / this->timeCst_);
-
-    ++iterationCount_;
-}

@@ -1,5 +1,10 @@
 #include "Node.hh"
 
+Node::Node()
+{
+    
+}
+
 Node::Node(int eLeft, int eRight, int eTop, int eBottom) : eLeft(eLeft), eRight(eRight), eTop(eTop), eBottom(eBottom) {
     std::mt19937 mt_rand(std::time(0));
     auto double_rand = std::bind(std::uniform_real_distribution<double>(0,1), mt_rand);
