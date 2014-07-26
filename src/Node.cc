@@ -21,7 +21,7 @@ double Node::Distance(cv::Vec3b aPixel) {
     double res = 0;
 
     for (unsigned i = 0; i < 3; ++i) {
-        res += pow((aPixel[i] * 100 / 255) - this->weight[i], 2);
+        res += pow((aPixel[i] / 255) - this->weight[i], 2);
     }
     return sqrt(res);
 }
@@ -31,5 +31,5 @@ void Node::AdjustWeights(const cv::Vec3b &target,
 			 const double Influence)
 {
   for (unsigned int w = 0; w < 3; ++w)
-    weight[w] += LearningRate * Influence * (target[w] * 100/255 - weight[w]);
+    weight[w] += LearningRate * Influence * (target[w] / 255 - weight[w]);
 }
