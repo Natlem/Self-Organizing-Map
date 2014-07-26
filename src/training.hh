@@ -12,7 +12,7 @@ class Training {
         void train();
     private:
         template<typename T>
-        void parseNetwork(std::function<T(Node&)> f) 
+        void parseNetwork(std::function<T(Node&)> f)
         {
            for (auto& v : this->network_)
               for (auto& n : v)
@@ -22,11 +22,11 @@ class Training {
         cv::Vec3b getAPixel();
         Node BMU_;
         std::vector<std::vector<Node>> network_;
-        cv::Mat3b image_; 
+        cv::Mat3b image_;
         double radius_;
         unsigned int nbrIteration_;
         double timeCst_;
         unsigned int iterationCount_;
 };
 
-#endif 
+#endif

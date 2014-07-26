@@ -1,7 +1,7 @@
 #include "training.hh"
 
 Training::Training(unsigned int wWidth, unsigned wHeight, cv::Mat3b& image, unsigned int nbrIteration) :nbrIteration_(nbrIteration) {
-    
+
     //Init All Node
     for (unsigned int x = 0; x < wWidth / 10; ++x)
     {
@@ -16,7 +16,7 @@ Training::Training(unsigned int wWidth, unsigned wHeight, cv::Mat3b& image, unsi
 }
 
 void Training::train() {
-    
+
     double neighborRadius = 0;
     findBMU(getAPixel());
     neighborRadius = this->radius_ * std::exp((double)-this->iterationCount_ / this->timeCst_);
@@ -27,16 +27,16 @@ cv::Vec3b Training::getAPixel() {
 
     std::mt19937 mt_rand(std::time(0));
     auto rand_col = std::bind(std::uniform_int_distribution<int>(0,this->image_.cols - 1), mt_rand);
-     
+
     auto rand_rows = std::bind(std::uniform_int_distribution<int>(0,this->image_.rows - 1), mt_rand);
-    
+
     return this->image_.at<cv::Vec3b>(rand_col(), rand_rows());
 }
 
 void Training::findBMU(cv::Vec3b aPixel)
 {
     std::mt19937 mt_rand(std::time(0));
- 
+
     double minDistance = std::numeric_limits<double>::max();
     double tmpDistance = 0;
 
@@ -49,4 +49,3 @@ void Training::findBMU(cv::Vec3b aPixel)
             }
       }
 }
-

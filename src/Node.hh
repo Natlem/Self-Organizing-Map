@@ -15,6 +15,9 @@ class Node {
         Node(int eLeft, int eRight, int eTop, int eBottom);
         Node();
         double Distance(cv::Vec3b aPixel);
+        void AdjustWeights(const std::vector<double> &target,
+			   const double LearningRate,
+			   const double Influence);
     private:
         double weight[3]; //Weights for B/G/R 0 < w < 1
         double n_X; // coordinate X in the Network/Lattice
@@ -27,4 +30,4 @@ class Node {
         int eBottom;
 };
 
-#endif 
+#endif
