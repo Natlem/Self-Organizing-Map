@@ -26,10 +26,10 @@ double Node::Distance(cv::Vec3b aPixel) {
     return sqrt(res);
 }
 
-void Node::AdjustWeights(const std::vector<double> &target,
+void Node::AdjustWeights(const cv::Vec3b &target,
 			 const double LearningRate,
 			 const double Influence)
 {
-  for (unsigned int w = 0; w < target.size(); ++w)
+  for (unsigned int w = 0; w < 3; ++w)
     weight[w] += LearningRate * Influence * (target[w] - weight[w]);
 }

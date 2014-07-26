@@ -9,6 +9,7 @@ Training::Training(unsigned int wWidth, unsigned wHeight, cv::Mat3b& image, unsi
         for (unsigned int y = 0; y < wHeight / 10; ++y)
             this->network_.back().push_back(Node(y * 10, (y + 1) * 10, x * 10, (x + 1)* 10));
     }
+    this->trainingDone = false;
     this->image_ = image;
     this->radius_ = std::max(wWidth,wHeight) / 2;
     this->timeCst_ = this->nbrIteration_ / std::log(this->radius_);
@@ -17,10 +18,22 @@ Training::Training(unsigned int wWidth, unsigned wHeight, cv::Mat3b& image, unsi
 
 void Training::train() {
 
-    double neighborRadius = 0;
-    findBMU(getAPixel());
-    neighborRadius = this->radius_ * std::exp((double)-this->iterationCount_ / this->timeCst_);
-    ++this->iterationCount_;
+    if (this->trainingDone)
+        return;
+    if (this->iterationCount_ < this->nbrIteration_)
+    {
+        double neighborRadius = 0;
+        double learningRate = this->StartLearningRate_;
+
+        currentPixel = getAPixel();
+        findBMU(currentPixel);
+        neighborRadius = this->radius_ * std::exp((double)-this->iterationCount_ / this->timeCst_);
+
+        adjustAllNodeInRadius(neighborRadius, learningRate);
+        learningRate = this->StartLearningRate_ * std::exp(-(double)this->iterationCount_ / this->nbrIteration_);
+
+        ++this->iterationCount_;
+    }
 }
 
 cv::Vec3b Training::getAPixel() {
@@ -41,11 +54,28 @@ void Training::findBMU(cv::Vec3b aPixel)
     double tmpDistance = 0;
 
     for (auto& v : this->network_)
-      for (auto& n : v) {
+        for (auto& n : v) {
             tmpDistance = n.Distance(aPixel);
             if (minDistance < n.Distance(aPixel)) {
                 this->BMU_ = n;
                 minDistance = tmpDistance;
             }
-      }
+        }
+}
+
+void Training::adjustAllNodeInRadius(double radius, double learningRate)
+{
+    double influence = 0;
+
+    for (auto& v : this->network_)
+        for (auto& n : v) {
+
+            double distNode2BMU = std::pow((n.n_X - this->BMU_.n_X),2) + std::pow((n.n_Y - this->BMU_.n_Y),2);
+
+            if (distNode2BMU < radius * radius) {
+                influence = std::exp(-(distNode2BMU) / (2*radius * radius));
+                n.AdjustWeights(this->currentPixel, learningRate, influence);
+            }
+        }
+
 }

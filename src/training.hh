@@ -11,13 +11,7 @@ class Training {
         Training(unsigned int wWidth, unsigned int wHeight, cv::Mat3b& image, unsigned int nbrIteration);
         void train();
     private:
-        template<typename T>
-        void parseNetwork(std::function<T(Node&)> f)
-        {
-           for (auto& v : this->network_)
-              for (auto& n : v)
-                  f(n);
-        }
+        void adjustAllNodeInRadius(double radius, double learningRate);
         void findBMU(cv::Vec3b aPixel);
         cv::Vec3b getAPixel();
         Node BMU_;
@@ -27,6 +21,9 @@ class Training {
         unsigned int nbrIteration_;
         double timeCst_;
         unsigned int iterationCount_;
+        const double StartLearningRate_ = 0.1;
+        cv::Vec3b currentPixel;
+        bool trainingDone;
 };
 
 #endif
