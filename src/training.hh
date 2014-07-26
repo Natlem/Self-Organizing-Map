@@ -12,12 +12,12 @@ class Training {
         void train();
         std::pair<unsigned int, unsigned int> findBestNode(cv::Vec3b aPixel);
         bool trainingDone = false;
+        std::vector<std::vector<Node>> network_;
     private:
         void adjustAllNodeInRadius(double radius, double learningRate);
         void findBMU(cv::Vec3b aPixel);
         cv::Vec3b getAPixel();
         Node BMU_;
-        std::vector<std::vector<Node>> network_;
         cv::Mat3b image_;
         double radius_;
         unsigned int nbrIteration_;
