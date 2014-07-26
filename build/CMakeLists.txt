@@ -60,7 +60,7 @@ find_package( OpenCV REQUIRED )
  )
  add_executable(
    generator
-   ${V_SOURCE}
+   ${V_GENERATE}
  )
 
 #Link target
