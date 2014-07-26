@@ -2,8 +2,9 @@
 
 extern std::function<int()> rand_col;
 extern std::function<int()> rand_rows;
+extern std::function<int()> rand_data;
 
-Training::Training(unsigned int wWidth, unsigned wHeight, cv::Mat3b& image, unsigned int nbrIteration) :nbrIteration_(nbrIteration) {
+Training::Training(unsigned int wWidth, unsigned wHeight, std::vector<cv::Vec3b>& data, unsigned int nbrIteration) :nbrIteration_(nbrIteration) {
 
     //Init All Node
     Node tmp = Node();
@@ -22,7 +23,7 @@ Training::Training(unsigned int wWidth, unsigned wHeight, cv::Mat3b& image, unsi
     }
 
     this->trainingDone = false;
-    this->image_ = image;
+    this->data = data;
     this->radius_ = std::max(wWidth,wHeight) / 2;
     this->timeCst_ = this->nbrIteration_ / std::log(this->radius_);
     this->iterationCount_ = 0;
@@ -33,15 +34,14 @@ void Training::train() {
 
     if (this->trainingDone)
         return;
-    if (this->iterationCount_ < this->nbrIteration_)
+    if (--this->nbrIteration_ > 0)
     {
         double neighborRadius = 0;
         double learningRate = this->StartLearningRate_;
 
-        currentPixel = getAPixel();
-        findBMU(currentPixel);
-        neighborRadius = this->radius_ * std::exp((double)-this->iterationCount_ / this->timeCst_);
-
+        cv::Vec3b v = this->data[rand_data()];
+        findBMU(v);
+        neighborRadius = this->radius_ * std::exp(-(this->iterationCount_ / this->timeCst_));
         adjustAllNodeInRadius(neighborRadius, learningRate);
         learningRate = this->StartLearningRate_ * std::exp(-(double)this->iterationCount_ / this->nbrIteration_);
 
@@ -51,23 +51,22 @@ void Training::train() {
         this->trainingDone = true;
 }
 
+/*
 cv::Vec3b Training::getAPixel() {
 
     std::mt19937 mt_rand(std::time(0));
         return this->image_.at<cv::Vec3b>(rand_col(), rand_rows());
 }
-
+*/
 void Training::findBMU(cv::Vec3b aPixel)
 {
     double minDistance = std::numeric_limits<double>::max();
-    double tmpDistance = 0;
 
     for (auto& v : this->network_)
         for (auto& n : v) {
-            tmpDistance = n.Distance(aPixel);
-            if (minDistance < n.Distance(aPixel)) {
+            if (minDistance > n.Distance(aPixel)) {
                 this->BMU_ = n;
-                minDistance = tmpDistance;
+                minDistance = n.Distance(aPixel);
             }
         }
 }
@@ -76,6 +75,7 @@ std::pair<unsigned int, unsigned int> Training::findBestNode(cv::Vec3b aPixel)
 {
     double minDistance = std::numeric_limits<double>::max();
     std::pair<unsigned int, unsigned int> res;
+    Node* tmpNode = nullptr;
 
     for (auto& v : this->network_)
         for (auto& n : v) {
@@ -83,8 +83,11 @@ std::pair<unsigned int, unsigned int> Training::findBestNode(cv::Vec3b aPixel)
                 res.first = n.n_X;
                 res.second = n.n_Y;
                 minDistance = n.Distance(aPixel);
+                tmpNode = &n;
             }
         }
+    if (tmpNode != nullptr)
+        tmpNode->isOccupied = true;
     return res;
 
 }
@@ -98,9 +101,13 @@ void Training::adjustAllNodeInRadius(double radius, double learningRate)
             double distNode2BMU = std::pow((n.n_X - this->BMU_.n_X),2) + std::pow((n.n_Y - this->BMU_.n_Y),2);
 
             if (distNode2BMU < radius * radius) {
-                influence = std::exp(-(distNode2BMU) / (2*radius * radius));
+                influence = std::exp(-(distNode2BMU / (2*radius * radius)));
                 n.AdjustWeights(this->currentPixel, learningRate, influence);
             }
         }
 
+//    std::cout << "B1= "<< network_[BMU_.n_X][BMU_.n_Y].weight[0] << " B2= " << network_[BMU_.n_X][BMU_.n_Y].weight[1] << " B3= "<< network_[BMU_.n_X][BMU_.n_Y].weight[2] << std::endl;
+
+  //  std::cout << "Nei1= "<< network_[BMU_.n_X][BMU_.n_Y +1].weight[0] << " Nei2= " << network_[BMU_.n_X][BMU_.n_Y + 1].weight[1] << " Nei3= "<< network_[BMU_.n_X][BMU_.n_Y + 1].weight[2] << std::endl;
+   // std::exit(0);
 }

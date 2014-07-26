@@ -31,5 +31,5 @@ void Node::AdjustWeights(const cv::Vec3b &target,
 			 const double Influence)
 {
   for (unsigned int w = 0; w < 3; ++w)
-    weight[w] += LearningRate * Influence * (target[w] - weight[w]);
+    weight[w] += LearningRate * Influence * (target[w] * 100/255 - weight[w]);
 }
