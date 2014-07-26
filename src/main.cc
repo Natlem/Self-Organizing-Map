@@ -48,9 +48,12 @@ int main(int argc, char* argv[])
 
             res.at<cv::Vec3b>(tmpdst.first, tmpdst.second) = tmp;
         }
+    cv::imwrite("result.png", res);
     cv::namedWindow("Display Windows", cv::WINDOW_AUTOSIZE);
     cv::imshow("Display Windows",res);
+
     cv::waitKey(0);
+
     const std::chrono::time_point<std::chrono::system_clock> end
         = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;
