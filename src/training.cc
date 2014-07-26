@@ -37,13 +37,13 @@ void Training::train() {
     if (--this->nbrIteration_ > 0)
     {
         double neighborRadius = 0;
-        double learningRate = this->StartLearningRate_;
 
         cv::Vec3b v = this->data[rand_data()];
         findBMU(v);
         neighborRadius = this->radius_ * std::exp(-(this->iterationCount_ / this->timeCst_));
         adjustAllNodeInRadius(neighborRadius, learningRate);
-        learningRate = this->StartLearningRate_ * std::exp(-(double)this->iterationCount_ / this->nbrIteration_);
+        std::cout << "exp= " << this->StartLearningRate_ * std::exp((-((double)this->iterationCount_ / (double)this->nbrIteration_))) << std::endl;
+        learningRate = this->StartLearningRate_ * std::exp((double)-(this->iterationCount_ / this->nbrIteration_));
 
         ++this->iterationCount_;
     }
@@ -100,14 +100,11 @@ void Training::adjustAllNodeInRadius(double radius, double learningRate)
 
             double distNode2BMU = std::pow((n.n_X - this->BMU_.n_X),2) + std::pow((n.n_Y - this->BMU_.n_Y),2);
 
+            if (n.n_X != this->BMU_.n_X && n.n_Y != this->BMU_.n_Y)
             if (distNode2BMU < radius * radius) {
                 influence = std::exp(-(distNode2BMU / (2*radius * radius)));
                 n.AdjustWeights(this->currentPixel, learningRate, influence);
             }
         }
 
-//    std::cout << "B1= "<< network_[BMU_.n_X][BMU_.n_Y].weight[0] << " B2= " << network_[BMU_.n_X][BMU_.n_Y].weight[1] << " B3= "<< network_[BMU_.n_X][BMU_.n_Y].weight[2] << std::endl;
-
-  //  std::cout << "Nei1= "<< network_[BMU_.n_X][BMU_.n_Y +1].weight[0] << " Nei2= " << network_[BMU_.n_X][BMU_.n_Y + 1].weight[1] << " Nei3= "<< network_[BMU_.n_X][BMU_.n_Y + 1].weight[2] << std::endl;
-   // std::exit(0);
 }

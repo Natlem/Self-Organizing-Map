@@ -14,6 +14,7 @@ class Training {
         std::pair<unsigned int, unsigned int> findBestNode(cv::Vec3b aPixel);
         bool trainingDone = false;
         std::vector<std::vector<Node>> network_;
+        double learningRate = StartLearningRate_;
     private:
         void adjustAllNodeInRadius(double radius, double learningRate);
         void findBMU(cv::Vec3b aPixel);
