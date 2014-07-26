@@ -21,13 +21,13 @@ int main(int argc, char** argv)
     colors.emplace_back(rand() % 256, rand() % 256, rand() % 256);
   }
 
-  unsigned int width = 600;
-  unsigned int height = 800;
+  unsigned int width = 40;
+  unsigned int height = 40;
 
   cv::Mat img(width, height, cv::DataType<cv::Vec3b>::type);
 
-  for (unsigned int i = 0; i < img.rows; ++i)
-    for (unsigned int j = 0; j < img.cols; ++j)
+  for (int i = 0; i < img.rows; ++i)
+    for (int j = 0; j < img.cols; ++j)
     {
       img.at<cv::Vec3b>(i, j) = colors[rand() % colors.size()];
     }

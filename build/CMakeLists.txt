@@ -1,4 +1,4 @@
-#Require 
+#Require
 cmake_minimum_required(VERSION 2.8)
 
 #Projet Name
@@ -11,18 +11,18 @@ if (UNIX)
    else (APPLE)
       set (CMAKE_CXX_COMPILER g++-4.8)
    endif (APPLE)
-endif (UNIX) 
+endif (UNIX)
 
 #flag
 #if (UNIX)
 #   if (APPLE)
 #       set (CMAKE_CXX_FLAGS)
 #   else (APPLE)
-       set (CMAKE_CXX_FLAGS "-std=c++11")
+       set (CMAKE_CXX_FLAGS "-std=c++11 -g3")
 #   endif (APPLE)
 #endif (UNIX)
 
-SET(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "-L/lib/ -ltbb")  
+SET(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "-L/lib/ -ltbb")
 
 # Add FindTBB directory to CMake's module path
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
@@ -83,7 +83,7 @@ ADD_CUSTOM_TARGET (distclean @echo cleaning for source distribution)
    *~
    *.swp
   )
-  
+
   ADD_CUSTOM_COMMAND(
     DEPENDS clean
     COMMENT "distribution clean"

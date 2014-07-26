@@ -20,9 +20,9 @@ class Node {
 			   const double Influence);
         double n_X; // coordinate X in the Network/Lattice
         double n_Y; // coordinate Y in the Network/Lattice
-
-    private:
+        bool isOccupied = false;
         double weight[3]; //Weights for B/G/R 0 < w < 1
+    private:
 
         // Edge of Node
         int eLeft;

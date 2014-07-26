@@ -11,6 +11,7 @@ Node::Node(int eLeft, int eRight, int eTop, int eBottom) : eLeft(eLeft), eRight(
 
     for (auto& d : weight) {
         d = double_rand();
+        std::cout << "d = " << d << std::endl;
     }
 
     n_X = this->eLeft + (double)(this->eRight - this->eLeft)/2;

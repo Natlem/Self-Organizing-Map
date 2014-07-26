@@ -3,17 +3,23 @@
 Training::Training(unsigned int wWidth, unsigned wHeight, cv::Mat3b& image, unsigned int nbrIteration) :nbrIteration_(nbrIteration) {
 
     //Init All Node
-    for (unsigned int x = 0; x < wWidth / 10; ++x)
+    Node tmp = Node();
+    for (unsigned int x = 0; x < wWidth / 1; ++x)
     {
         this->network_.push_back(std::vector<Node>());
-        for (unsigned int y = 0; y < wHeight / 10; ++y)
-            this->network_.back().push_back(Node(y * 10, (y + 1) * 10, x * 10, (x + 1)* 10));
+        for (unsigned int y = 0; y < wHeight / 1; ++y) {
+            tmp = Node(y * 1, (y + 1) * 1, x * 1, (x + 1)* 1);
+            tmp.n_X = x;
+            tmp.n_Y = y;
+            this->network_.back().push_back(tmp);
+        }
     }
     this->trainingDone = false;
     this->image_ = image;
     this->radius_ = std::max(wWidth,wHeight) / 2;
     this->timeCst_ = this->nbrIteration_ / std::log(this->radius_);
     this->iterationCount_ = 0;
+
 }
 
 void Training::train() {
@@ -34,6 +40,8 @@ void Training::train() {
 
         ++this->iterationCount_;
     }
+    else
+        this->trainingDone = true;
 }
 
 cv::Vec3b Training::getAPixel() {
@@ -48,8 +56,6 @@ cv::Vec3b Training::getAPixel() {
 
 void Training::findBMU(cv::Vec3b aPixel)
 {
-    std::mt19937 mt_rand(std::time(0));
-
     double minDistance = std::numeric_limits<double>::max();
     double tmpDistance = 0;
 
@@ -63,6 +69,22 @@ void Training::findBMU(cv::Vec3b aPixel)
         }
 }
 
+std::pair<unsigned int, unsigned int> Training::findBestNode(cv::Vec3b aPixel)
+{
+    double minDistance = std::numeric_limits<double>::max();
+    std::pair<unsigned int, unsigned int> res;
+
+    for (auto& v : this->network_)
+        for (auto& n : v) {
+            if (minDistance > n.Distance(aPixel) && !n.isOccupied) {
+                res.first = n.n_X;
+                res.second = n.n_Y;
+                minDistance = n.Distance(aPixel);
+            }
+        }
+    return res;
+
+}
 void Training::adjustAllNodeInRadius(double radius, double learningRate)
 {
     double influence = 0;

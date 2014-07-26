@@ -10,6 +10,8 @@ class Training {
     public:
         Training(unsigned int wWidth, unsigned int wHeight, cv::Mat3b& image, unsigned int nbrIteration);
         void train();
+        std::pair<unsigned int, unsigned int> findBestNode(cv::Vec3b aPixel);
+        bool trainingDone = false;
     private:
         void adjustAllNodeInRadius(double radius, double learningRate);
         void findBMU(cv::Vec3b aPixel);
@@ -23,7 +25,6 @@ class Training {
         unsigned int iterationCount_;
         const double StartLearningRate_ = 0.1;
         cv::Vec3b currentPixel;
-        bool trainingDone;
 };
 
 #endif
