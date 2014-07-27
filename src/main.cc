@@ -28,7 +28,8 @@ int main(int argc, char* argv[])
 
     rand_data = std::bind(std::uniform_int_distribution<int>(0,data.size() - 1), std::mt19937(seed));
 
-    Training nN = Training(image.cols, image.rows, data,1000);
+    unsigned int nb_iteration = 10000;
+    Training nN = Training(image.cols, image.rows, data, nb_iteration);
 
     while (!nN.trainingDone) {
         nN.train();
