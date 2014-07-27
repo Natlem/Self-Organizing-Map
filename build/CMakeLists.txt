@@ -45,12 +45,15 @@ find_package( OpenCV REQUIRED )
  file(
    GLOB_RECURSE
    V_SOURCE
-   ../src/*.[ch][ch]
+   ../src/color.[ch][ch]
+   ../src/main.cc
+   ../src/Node.[ch][ch]
+   ../src/training.[ch][ch]
  )
  file(
    GLOB_RECURSE
    V_GENERATE
-   ../example/*.[ch][ch]
+   ../src/generator.cc
  )
 
  #Add Files

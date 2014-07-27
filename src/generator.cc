@@ -6,9 +6,9 @@
 
 int main(int argc, char** argv)
 {
-  if( argc != 3)
+  if( argc != 5)
   {
-    std::cout <<" Usage: " << argv[0]  <<" nb_color ouput_img" << std::endl;
+    std::cout <<" Usage: " << argv[0]  <<" nb_color ouput_img width heigth" << std::endl;
     return -1;
   }
 
@@ -21,8 +21,8 @@ int main(int argc, char** argv)
     colors.emplace_back(rand() % 256, rand() % 256, rand() % 256);
   }
 
-  unsigned int width = 40;
-  unsigned int height = 40;
+  unsigned int width = atoi(argv[3]);
+  unsigned int height = atoi(argv[4]);
 
   cv::Mat img(width, height, cv::DataType<cv::Vec3b>::type);
 
