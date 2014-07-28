@@ -2,6 +2,7 @@
 #include <iostream>
 #include "training.hh"
 #include "color.hh"
+#include "tbb/task_scheduler_init.h"
 
 std::mt19937::result_type seed  = std::time(0);
 std::function<int()> double_rand = std::bind(std::uniform_int_distribution<int>(0,100), std::mt19937(seed));
@@ -15,6 +16,11 @@ std::function<int()> rand_data;
 
 int main(int argc, char* argv[])
 {
+    if (argc != 3) {
+        std::cout << "Usage : ./Prpa_Project image_name numberOfThreads" << std::endl;
+        return 1;
+    }
+    tbb::task_scheduler_init(atoi(argv[2]));
     const std::chrono::time_point<std::chrono::system_clock> start
         = std::chrono::system_clock::now();
 
@@ -30,7 +36,7 @@ int main(int argc, char* argv[])
 
     unsigned int nb_iteration = 10000;
     Training nN = Training(image.cols, image.rows, data, nb_iteration);
-
+    nN.nbrThreads = atoi(argv[2]);
     while (!nN.trainingDone) {
         nN.train();
     }

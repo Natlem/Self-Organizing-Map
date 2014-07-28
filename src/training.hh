@@ -20,9 +20,9 @@ class Training {
         std::vector<std::vector<Node>> network_;
         double learningRate = 0.1;
         void bestMultiple(int num, int&res1, int& res2);
-        unsigned int nbrThreads;
         unsigned int networkHeight;
         unsigned int networkWidth;
+        unsigned int nbrThreads = 1;
     private:
         void adjustAllNodeInRadius(double radius, double learningRate);
         void findBMU(cv::Vec3b aPixel);
@@ -36,5 +36,4 @@ class Training {
         const double StartLearningRate_ = 0.1;
         cv::Vec3b currentPixel;
 };
-
 #endif
