@@ -48,7 +48,7 @@ Training::Training(unsigned int wWidth, unsigned wHeight, std::vector<cv::Vec3b>
         nbOfNodeR = this->networkWidth / cDiv;
     }
     tbb::affinity_partitioner ap;
-    tbb::parallel_for(tbb::blocked_range2d<double>(0, networkWidth, nbOfNodeC, 0, networkHeight, nbOfNodeR), tbbNetwork(this->network_));
+    tbb::parallel_for(tbb::blocked_range2d<double>(0, networkWidth, nbOfNodeC, 0, networkHeight, nbOfNodeR), tbbNetwork(this->network_), ap);
 
 }
 
@@ -110,7 +110,7 @@ void Training::findBMU(cv::Vec3b aPixel)
         nbOfNodeR = this->networkWidth / cDiv;
     }
     tbb::affinity_partitioner ap;
-    tbb::parallel_for(tbb::blocked_range2d<double>(0, networkWidth, nbOfNodeC, 0, networkHeight, nbOfNodeR), TBBFindBMU(this->BMU_, this->network_, aPixel));
+    tbb::parallel_for(tbb::blocked_range2d<double>(0, networkWidth, nbOfNodeC, 0, networkHeight, nbOfNodeR), TBBFindBMU(this->BMU_, this->network_, aPixel), ap);
 }
 
 std::pair<unsigned int, unsigned int> Training::findBestNode(cv::Vec3b aPixel)

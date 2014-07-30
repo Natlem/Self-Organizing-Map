@@ -51,6 +51,7 @@ find_package( OpenCV REQUIRED )
    ../src/training.[ch][ch]
    ../src/tbbFindBMU.[ch][ch]
    ../src/tbbNetwork.[ch][ch]
+    ../src/tbbCluster.[ch][ch]
    )
  file(
    GLOB_RECURSE
