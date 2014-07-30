@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 
     rand_data = std::bind(std::uniform_int_distribution<int>(0,data.size() - 1), std::mt19937(seed));
 
-    unsigned int nb_iteration = 10000;
+    unsigned int nb_iteration = 5000;
     Training nN = Training(image.cols, image.rows, data, nb_iteration);
     nN.nbrThreads = atoi(argv[2]);
     while (!nN.trainingDone) {
