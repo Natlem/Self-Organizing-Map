@@ -14,7 +14,7 @@ class Node {
     public:
         Node(int eLeft, int eRight, int eTop, int eBottom);
         Node();
-        double Distance(cv::Vec3b aPixel);
+        double Distance(const cv::Vec3b aPixel) const;
         void AdjustWeights(const cv::Vec3b &target,
 			   const double LearningRate,
 			   const double Influence);

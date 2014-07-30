@@ -6,6 +6,10 @@
 #include <limits>
 #include <cmath>
 #include <vector>
+#include "fastonebigheader.h"
+#include "tbbFindBMU.hh"
+#include "tbb/parallel_for.h"
+#include "tbb/partitioner.h"
 
 class Training {
     public:
@@ -14,7 +18,11 @@ class Training {
         std::pair<unsigned int, unsigned int> findBestNode(cv::Vec3b aPixel);
         bool trainingDone = false;
         std::vector<std::vector<Node>> network_;
-        double learningRate = StartLearningRate_;
+        double learningRate = 0.1;
+        void bestMultiple(int num, int&res1, int& res2);
+        unsigned int nbrThreads;
+        unsigned int networkHeight;
+        unsigned int networkWidth;
     private:
         void adjustAllNodeInRadius(double radius, double learningRate);
         void findBMU(cv::Vec3b aPixel);

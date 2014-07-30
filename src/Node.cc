@@ -17,7 +17,7 @@ Node::Node(int eLeft, int eRight, int eTop, int eBottom) : eLeft(eLeft), eRight(
     n_Y = this->eTop + (double)(this->eBottom - this->eTop)/2;
 }
 
-double Node::Distance(cv::Vec3b aPixel) {
+double Node::Distance(const cv::Vec3b aPixel) const{
     double res = 0;
 
     for (unsigned i = 0; i < 3; ++i) {

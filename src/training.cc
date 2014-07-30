@@ -22,7 +22,7 @@ Training::Training(unsigned int wWidth, unsigned wHeight, std::vector<cv::Vec3b>
     this->trainingDone = false;
     this->data = data;
     this->radius_ = std::max(wWidth,wHeight) / 2;
-    this->timeCst_ = this->nbrIteration_ / std::log(this->radius_);
+    this->timeCst_ = this->nbrIteration_ / fasterlog(this->radius_);
     this->iterationCount_ = 0;
 
 }
@@ -37,9 +37,9 @@ void Training::train() {
 
         this->currentPixel = this->data[rand_data()];
         findBMU(this->currentPixel);
-        neighborRadius = this->radius_ * std::exp(-(this->iterationCount_ / this->timeCst_));
+        neighborRadius = this->radius_ * fasterexp(-(this->iterationCount_ / this->timeCst_));
         adjustAllNodeInRadius(neighborRadius, learningRate);
-        learningRate = this->StartLearningRate_ * std::exp((-((double)this->iterationCount_ / (double)this->nbrIteration_)));
+        learningRate = this->StartLearningRate_ * fasterexp((-((double)this->iterationCount_ / (double)this->nbrIteration_)));
         ++this->iterationCount_;
     }
     else
@@ -47,23 +47,46 @@ void Training::train() {
 }
 
 /*
-cv::Vec3b Training::getAPixel() {
+   cv::Vec3b Training::getAPixel() {
 
-    std::mt19937 mt_rand(std::time(0));
-        return this->image_.at<cv::Vec3b>(rand_col(), rand_rows());
-}
-*/
+   std::mt19937 mt_rand(std::time(0));
+   return this->image_.at<cv::Vec3b>(rand_col(), rand_rows());
+   }
+   */
 void Training::findBMU(cv::Vec3b aPixel)
 {
-    double minDistance = std::numeric_limits<double>::max();
+    //double minDistance = std::numeric_limits<double>::max();
 
-    for (auto& v : this->network_)
-        for (auto& n : v) {
-            if (minDistance > n.Distance(aPixel)) {
-                this->BMU_ = n;
-                minDistance = n.Distance(aPixel);
-            }
-        }
+    //for (auto& v : this->network_)
+    //  for (auto& n : v) {
+    //    if (minDistance > n.Distance(aPixel)) {
+    //      this->BMU_ = n;
+    //    minDistance = n.Distance(aPixel);
+    //}
+    // }
+
+    unsigned int nbRBlockEachRow = static_cast<unsigned int>(floor(sqrt(this->nbrThreads)));
+    unsigned int nbOfNodeR = 0;
+    unsigned int nbOfNodeC = 0;
+
+    if (this->nbrThreads % nbRBlockEachRow == 0)
+    {
+        nbOfNodeR = this->networkHeight / nbRBlockEachRow;
+        nbOfNodeC = this->networkWidth / nbRBlockEachRow;
+    }
+    else
+    {
+        int cDiv = 0;
+        int rDiv = 0;
+
+        bestMultiple(this->nbrThreads, cDiv, rDiv);
+
+        nbOfNodeC = this->networkHeight / rDiv;
+        nbOfNodeR = this->networkWidth / cDiv;
+    }
+
+    tbb::affinity_partitioner ap;
+    tbb::parallel_for(tbb::blocked_range2d<double>(0, networkWidth, nbOfNodeC, 0, networkHeight, nbOfNodeR), TBBFindBMU(this->BMU_, this->network_, aPixel), ap);
 }
 
 std::pair<unsigned int, unsigned int> Training::findBestNode(cv::Vec3b aPixel)
@@ -95,8 +118,39 @@ void Training::adjustAllNodeInRadius(double radius, double learningRate)
 
             double distNode2BMU = std::pow((n.n_X - this->BMU_.n_X),2) + std::pow((n.n_Y - this->BMU_.n_Y),2);
             if (distNode2BMU < radius * radius) {
-                influence = std::exp(-(distNode2BMU / (2*radius * radius)));
+                influence = fasterexp(-(distNode2BMU / (2*radius * radius)));
                 n.AdjustWeights(this->currentPixel, learningRate, influence);
             }
         }
+}
+
+
+void Training::bestMultiple(int numberOfBlock, int& res1, int& res2)
+{
+    int diff = numberOfBlock;
+    int temp1 = 0;
+    int temp2 = 0;
+
+    for (int i = 1; i < numberOfBlock; ++i)
+    {
+        if (numberOfBlock % i == 0)
+        {
+            temp1 = i;
+            temp2 = numberOfBlock / i;
+            if (abs(temp1 - temp2) < diff)
+            {
+                if (temp1 >= temp2)
+                {
+                    res1 = temp1;
+                    res2 = temp2;
+                }
+                else
+                {
+                    res1 = temp2;
+                    res2 = temp1;
+                }
+                diff = abs(res1 - res2);
+            }
+        }
+    }
 }
