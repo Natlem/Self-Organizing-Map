@@ -10,6 +10,7 @@
 #include "tbbFindBMU.hh"
 #include "tbb/parallel_for.h"
 #include "tbb/partitioner.h"
+#include "tbbNetwork.hh"
 
 class Training {
     public:

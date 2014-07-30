@@ -50,7 +50,8 @@ find_package( OpenCV REQUIRED )
    ../src/Node.[ch][ch]
    ../src/training.[ch][ch]
    ../src/tbbFindBMU.[ch][ch]
- )
+   ../src/tbbNetwork.[ch][ch]
+   )
  file(
    GLOB_RECURSE
    V_GENERATE

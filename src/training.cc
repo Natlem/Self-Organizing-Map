@@ -7,17 +7,18 @@ extern std::function<int()> rand_data;
 Training::Training(unsigned int wWidth, unsigned wHeight, std::vector<cv::Vec3b>& data, unsigned int nbrIteration) :nbrIteration_(nbrIteration) {
 
     //Init All Node
-    Node tmp = Node();
-    for (unsigned int x = 0; x < wWidth / 1; ++x)
-    {
-        this->network_.push_back(std::vector<Node>());
-        for (unsigned int y = 0; y < wHeight / 1; ++y) {
-            tmp = Node(y * 1, (y + 1) * 1, x * 1, (x + 1)* 1);
-            tmp.n_X = x;
-            tmp.n_Y = y;
-            this->network_.back().push_back(tmp);
-        }
-    }
+    //Node tmp = Node();
+    //for (unsigned int x = 0; x < wWidth / 1; ++x)
+    //{
+    //    this->network_.push_back(std::vector<Node>());
+     //   for (unsigned int y = 0; y < wHeight / 1; ++y) {
+     //       tmp = Node(y * 1, (y + 1) * 1, x * 1, (x + 1)* 1);
+     //       tmp.n_X = x;
+     //       tmp.n_Y = y;
+     //       this->network_.back().push_back(tmp);
+     //   }
+    //}
+
 
     this->networkHeight = wHeight;
     this->networkWidth = wWidth;
@@ -26,6 +27,28 @@ Training::Training(unsigned int wWidth, unsigned wHeight, std::vector<cv::Vec3b>
     this->radius_ = std::max(wWidth,wHeight) / 2;
     this->timeCst_ = this->nbrIteration_ / fasterlog(this->radius_);
     this->iterationCount_ = 0;
+
+    unsigned int nbRBlockEachRow = static_cast<unsigned int>(floor(sqrt(this->nbrThreads)));
+    unsigned int nbOfNodeR = 0;
+    unsigned int nbOfNodeC = 0;
+
+    if (this->nbrThreads % nbRBlockEachRow == 0)
+    {
+        nbOfNodeR = this->networkHeight / nbRBlockEachRow;
+        nbOfNodeC = this->networkWidth / nbRBlockEachRow;
+    }
+    else
+    {
+        int cDiv = 0;
+        int rDiv = 0;
+
+        bestMultiple(this->nbrThreads, cDiv, rDiv);
+
+        nbOfNodeC = this->networkHeight / rDiv;
+        nbOfNodeR = this->networkWidth / cDiv;
+    }
+    tbb::affinity_partitioner ap;
+    tbb::parallel_for(tbb::blocked_range2d<double>(0, networkWidth, nbOfNodeC, 0, networkHeight, nbOfNodeR), tbbNetwork(this->network_));
 
 }
 
