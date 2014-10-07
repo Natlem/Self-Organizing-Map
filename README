@@ -1,0 +1,7 @@
+Self Organizing Map
+
+A very simple use of SOM (Self Organizing Map) using IntelTBB and OpenCV.
+The main goal of this project is to learn what is a SOM and the basic of IntelTBB.
+
+-----
+To compile this project, you will need CMake, IntellTBB and OpenCV.
